@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphelios-Weapon-Switch</title>
+    <script src="./localize.js"></script>
+    <script src="./watch.js"></script>
+    <script src="./utils.js"></script>
+    <link href="./index.css" rel="stylesheet">
+    <link href="./style-bar.css" rel="stylesheet">
+</head>
+<body>
+    <div id="Root">
+        <div class="Tip Border-Aphelios M absolute unselect">空格用完主武器，w切换武器</div>
+        <div id="Container" class="absolute Border-Aphelios">
+            <div id="Bar-skill" class="flex space-in-h">
+                <div class="Left flex align-center ">
+                    <div class="group flex relative">
+                        <div class="group z-index-top relative">
+                            <div class="Bullet Primary Border-Aphelios
+                            M cycle text-center unselect">主武器</div>
+                            <div class="Number Main absolute unselect">50</div>
+                        </div>
+                        <div class="Q Border-Aphelios H text-center
+                            unselect relative">Q</div>
+                    </div>
+                    <div class="group relative">
+                        <div class="Bullet Secondary Border-Aphelios
+                            S cycle text-center unselect">副武器</div>
+                        <div class="Number absolute unselect">50</div>
+                    </div>
+                    <div class="Upcoming Bullet Border-Aphelios
+                        S cycle text-center unselect">下个</div>
+                    <div class="R Border-Aphelios H text-center unselect">R</div>
+                </div>
+                <div class="Right flex">
+                    <div class="D Border-Aphelios M text-center unselect">D</div>
+                    <div class="F Border-Aphelios M text-center m-l-h
+                        unselect">F</div>
+                </div>
+
+            </div>
+
+            <div id="Bar-info">
+                <div class="HP"></div>
+                <div class="MP"></div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<style>
+    #Root {
+        overflow: hidden;
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: linear-gradient(
+            135deg, 
+            rgb(30, 46, 45), 
+            rgb(81, 80, 65) 40%,
+            rgb(81, 80, 65) 70%,
+            rgb(30, 46, 45)
+        );
+    }
+    .Tip {
+        top: 40vh;
+        right: 1px;
+        width: fit-content;
+        padding: 10px;
+        background-color: var(--sys-color-background-variant);
+        animation: 
+            slide-in-to-left .3s ease-in,
+            fade-in .4s ease-in;
+    }
+</style>
+
+<script>
+const localizeConfig = [
+    {name: 'Tip', text: {
+        zh: '空格用完主武器，w切换武器',
+        en: 'Use space to Empty the main weapon, w to switch weapons'
+    }},
+    {name: 'Primary', text: {
+        zh: '主武器',
+        en: 'Primary'
+    }},
+    {name: 'Secondary', text: {
+        zh: '副武器',
+        en: 'Secondary'
+    }},
+    {name: 'Upcoming', text: {
+        zh: '下个',
+        en: 'Nxt'
+    }}
+]
+initLocalize(localizeConfig, getElement) // 简单的本地化
+class WEAPON extends Subject {
+    constructor (name) {
+        super()
+        this.name = name
+    }
+}
+class ELEMENT extends Observer {
+    constructor (it, type) {
+        super(it)
+        this.type = type
+    }
+    update () {
+        if (this.it.classList.contains('red')) this.it.classList.toggle('red')
+        if (this.it.classList.contains('green')) this.it.classList.toggle('green')
+        if (this.it.classList.contains('purple')) this.it.classList.toggle('purple')
+        if (this.it.classList.contains('blue')) this.it.classList.toggle('blue')
+        if (this.it.classList.contains('white')) this.it.classList.toggle('white')
+        let currentColor = ''
+        switch (this.type) {
+            case 'primary': 
+                currentColor = primaryWeaponColor
+                break
+            case 'secondary':
+                currentColor = secondaryWeapon
+                break
+            default:
+                currentColor = nextWeaponColor
+                break
+        }
+        this.it.classList.add(currentColor)
+    }
+}
+let weaponList = [
+    'red',
+    'green',
+    'purple',
+    'blue',
+    'white'
+]
+let restWeapons = [weaponList[0]]
+let secondaryWeapon = weaponList[1] // 副武器命名单独出来
+restWeapons = restWeapons.concat(weaponList.slice(2))
+let primaryWeaponColor = restWeapons[0]
+let nextWeaponColor = restWeapons[1]
+// 实例化
+const weaponPrimary = new WEAPON(primaryWeaponColor)
+const weaponSecondary = new WEAPON(secondaryWeapon)
+const weaponNext = new WEAPON(nextWeaponColor)
+// 获元素
+const primary = getElement('class', 'Primary')[0]
+const Q = getElement('class', 'Q')[0]
+const secondary = getElement('class', 'Secondary')[0]
+const next = getElement('class', 'Upcoming')[0]
+// 观察者类
+const obsPrimary = new ELEMENT(primary, 'primary')
+const obsQ = new ELEMENT(Q, 'primary')
+const obsSecondary = new ELEMENT(secondary, 'secondary')
+const obsNext = new ELEMENT(next, 'next')
+// 添加收听
+weaponPrimary.add(obsPrimary)
+weaponPrimary.add(obsQ)
+weaponSecondary.add(obsSecondary)
+weaponNext.add(obsNext)
+// 初始化
+weaponPrimary.notify()
+weaponSecondary.notify()
+weaponNext.notify()
+// 目标者通知更新
+document.addEventListener('keyup',(e) => {
+    if (e.key === ' ') handleWeaponList()
+    if (e.key === 'w') {
+        switchWeapon()
+        weaponPrimary.notify()
+        weaponSecondary.notify()
+    }
+})
+
+function switchWeapon () {
+    [primaryWeaponColor, secondaryWeapon] = [secondaryWeapon, primaryWeaponColor]
+    restWeapons[0] = primaryWeaponColor // 主变副
+}
+function handleWeaponList () {
+    const lastWeapon = restWeapons.shift()
+    restWeapons.push(lastWeapon)
+    primaryWeaponColor = restWeapons[0]
+    nextWeaponColor = restWeapons[1]
+    weaponPrimary.notify()
+    weaponSecondary.notify()
+    weaponNext.notify()
+}
+</script>
+</html>

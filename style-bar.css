@@ -1,0 +1,114 @@
+#Container {
+    z-index: 1000;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 1px;
+    width: fit-content;
+    padding: 8px;
+    height: max-content;
+    background-color: var(--sys-color-background);
+}
+.Number.Main {
+    left: 22px;
+    bottom: 2px;
+}
+.Number {
+    left: 12px;
+    bottom: 2px;
+    text-shadow: 0 0.1em 2px #000000;
+}
+#Bar-skill {
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+}
+.Bullet {
+    font-size: 10px;
+    overflow: hidden;
+}
+.Bullet.Primary {
+    height: 60px;
+    width: 60px;
+    line-height: 40px;
+}
+.Bullet.Secondary {
+    height: 40px;
+    width: 40px;
+    line-height: 30px;
+}
+.Bullet.Upcoming {
+    height: 20px;
+    width: 20px;
+    font-weight: 800;
+    line-height: 20px;
+    transform: translate(-8px, -28px);
+}
+.Q {
+    height: 45px;
+    width: 45px;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 40px;
+    transform: translate(-14px, 5px);
+}
+.Q::after {
+    content: 'w';
+    position: absolute;
+    left: 50px;
+    top: 13px;
+    height: 14px;
+    line-height: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--sys-color-key);
+    border-top: var(--size-s) solid var(--sys-color-border);
+    border-bottom: var(--size-s) solid var(--sys-color-border);
+}
+.R {
+    height: 45px;
+    width: 45px;
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: 800;
+    color: rgb(24, 50, 116);
+    text-shadow: 0 0.1em 20px rgb(24, 50, 116);
+    background-color: rgb(200, 243, 249);
+}
+.D, .F {
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+}
+.Primary { background-color: brown; }
+/* weapon */
+.Bullet, .Q { transition: .2s color ease-in; }
+.Bullet.red, .Q.red {
+    color: var(--on-background-red);
+    background-color: var(--background-red);
+}
+.Bullet.green, .Q.green {
+    color: var(--on-background-green);
+    background-color: var(--background-green);
+}
+.Bullet.purple, .Q.purple {
+    color: var(--on-background-purple);
+    background-color: var(--background-purple);
+}
+.Bullet.blue, .Q.blue {
+    color: var(--on-background-blue);
+    background-color: var(--background-blue);
+}
+.Bullet.white, .Q.white {
+    color: var(--on-background-white);
+    background-color: var(--background-white);
+}
+
+.Right { margin-left: 10px; height: 100%; }
+#Bar-info { width: 100%; height: 30px; margin-top: 20px; }
+#Bar-info > * {
+    width: 100%;
+    height: 13px;
+}
+#Bar-info > * + * { margin-top: 3px; }
+.HP { background-color: rgb(4, 61, 7); }
+.MP { background-color: rgb(21, 43, 132); }
